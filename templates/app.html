@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} - Mahasiswa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.2.1-dist/css/bootstrap.min.css') }}">
+    <style>
+        .content{
+            padding: 24px 0px;
+        }
+    </style>
+    {% block css %} {% endblock %}
+</head>
+<body>
+
+    <main class="content container">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class=flashes>
+                <div class="alert alert-info">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {% for message in messages %}
+                        <strong>{{ message }}</strong>
+                    {% endfor %}
+                </div>
+            </div>
+          {% endif %}
+        {% endwith %}
+        {% block content %} {% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-4.2.1-dist/js/bootstrap.min.js') }}"></script>
+    {% block js %} {% endblock %}
+</body>
+</html>
