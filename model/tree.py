@@ -3,26 +3,24 @@ import pymysql
 
 class TreeModel():
 
-    @classmethod
-    def get(self):
-        user = ['tes','tes']
-        return user
+    @classmethod    
+          
+    def searchUserNetwork(id):
+        if (id is not None):
+            sql = "select * from t_tree where id=%s"
+            id = id
+            conn = mysql.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute(sql,id)
+            user = cursor.fetchone()
+            return user
     
-    def getUserTree(q):
-        user = []
-        return user
-
-    def saveUser(req):
-        if (req is not None):
-            username = req.form['username']
-            fullname = req.form['fullname']
-            try:
-                sql = "INSERT INTO users(username,fullname) VALUES(%s,%s)"
-                data = (username, fullname)
-                conn = mysql.connect()
-                cursor = conn.cursor()
-                cursor.execute(sql, data)
-                conn.commit()
-                return 'success'
-            except ex:
-                return ex
+    def searchNetworkUp(id):
+        if (id is not None):
+            sql = "select * from t_tree t join users u on u.id = t.id_user where t.Lnum <= %s and t.Rnum >= %s"
+            user = TreeModel.searchUserNetwork(id)
+            conn = mysql.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute(sql,(user['Lnum'],user['Rnum']))
+            user = cursor.fetchone()
+            return user

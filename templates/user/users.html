@@ -1,0 +1,44 @@
+{% extends 'layouts/app.html' %}
+
+{% block title %}
+Users
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            Users
+            <a class="pull-right" href="/add-user"><i class="fa fa-user-plus"></i> Add user</a>
+        </div>
+        <div class="card-body">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-sm dataTable">
+                            <thead>
+                            <tr>
+                                <th class="text-center">ID</th>
+                                <th>Username</th>
+                                <th>Fullname</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if users %}
+                                {% for u in users %}
+                                    <tr>
+                                        <td class="text-center">{{loop.index}}</td>
+                                        <td>{{ u.username }}</td>
+                                        <td>{{ u.fullname }}</td>
+                                        <td></td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>        
+    </div>
+</div>
+{% endblock %}
