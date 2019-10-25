@@ -26,10 +26,11 @@ class TreeModel():
             return user
         
     def getTree():
-        sql = "select * from t_tree"
+        sql = "select * from t_tree tr join users u on u.id = tr.id_user"
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute(sql)
         user = cursor.fetchall()
         return user
+            
             

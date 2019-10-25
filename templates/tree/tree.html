@@ -68,7 +68,37 @@ Tree
 <script>
     var dataTree = '{{trees}}'
     $(document).ready(function(){
-        console.log(dataTree)
+        $.ajax({
+            url:'/ajax-data-tree',
+            success:function(response){
+                let data = getNestedChildren(response,null)
+                console.log(data)
+            }
+        })
+
+        function getNestedChildren(arr, parent) {
+            var out = ''
+            out += '<ul>'
+            for(var i in arr) {
+                out += '<li>'
+                if(arr[i].id_parent == parent) {
+                    out += arr[i].fullname
+                    var children = getNestedChildren(arr, arr[i].id_user)
+                    if(children.length) {
+                        //arr[i].children = children
+                        out += children
+                    }else{
+                        out += ''    
+                    }
+                    //out += arr[i]
+                }else{
+                    out += ''  
+                }
+                out += '</li>'
+            }
+            out += '</ul>'
+            return out
+        }
     })
 </script>
 {% endblock %}
