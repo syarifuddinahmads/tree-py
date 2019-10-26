@@ -7,6 +7,10 @@ tree = Blueprint('tree', __name__)
 def index():
     return render_template('tree/tree.html')
 
+@tree.route('/<int:id>')
+def userTree(id):
+    return render_template('tree/tree.html',id=id)
+
 @tree.route('/ajax-data-tree')
 def getDataTree():
     tree = TreeModel.getTree()

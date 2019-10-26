@@ -9,37 +9,7 @@ Tree
 {% endblock %}
 
 {% block content %}
-<div class="tree">
-    <ul>
-        <li>
-            <a href="#">Parent</a>
-            <ul>
-                <li>
-                    <a href="#">Child</a>
-                    <ul>
-                        <li>
-                            <a href="#">Grand Child</a>
-                        </li>
-                        <li>
-                            <a href="#">Grand Child</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Child</a>
-                    <ul>
-                        <li>
-                            <a href="#">Grand Child</a>
-                        </li>
-                        <li>
-                            <a href="#">Grand Child</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ul>
-</div>
+<div class="tree"></div>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -62,39 +32,71 @@ Tree
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalInsertTree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}
 <script>
-    var dataTree = '{{trees}}'
+    var id = '{{id}}'
     $(document).ready(function(){
-        $.ajax({
-            url:'/ajax-data-tree',
-            success:function(response){
-                let data = getNestedChildren(response,null)
-                console.log(data)
-            }
-        })
+
+        if(id != ''){
+            getTree(id);
+        }else{
+            getTree(null);
+        }
+
+        function getTree(id){
+            $.ajax({
+                url:'/ajax-data-tree',
+                success:function(response){
+                    let data = getNestedChildren(response,id)
+                    $('.tree').html(data)
+                }
+            })
+        }
 
         function getNestedChildren(arr, parent) {
-            var out = ''
+            let out = ''
             out += '<ul>'
             for(var i in arr) {
-                out += '<li>'
                 if(arr[i].id_parent == parent) {
-                    out += arr[i].fullname
+                    out += '<li>'
+                    if(arr[i].Rnum == (arr[i].Lnum + 1)){
+                        out += '<a href="#" class="tree-node" data-toggle="modal" data-target="#modalInsertTree">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'    
+                    }else{
+                        out += '<a href="'+arr[i].id_user+'">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'
+                    }
                     var children = getNestedChildren(arr, arr[i].id_user)
                     if(children.length) {
-                        //arr[i].children = children
-                        out += children
+                        out += arr[i].children = children
                     }else{
-                        out += ''    
+                        out += ''
                     }
-                    //out += arr[i]
+                    out += '</li>'
                 }else{
                     out += ''  
                 }
-                out += '</li>'
             }
             out += '</ul>'
             return out
