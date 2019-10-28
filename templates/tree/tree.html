@@ -36,7 +36,7 @@ Tree
 <div class="modal fade" id="modalInsertTree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form class="modal-content" action="/save-tree" method="post">
+        <form class="modal-content" action="save-tree" method="post">
             <div class="modal-header">
                 <h5 class="modal-title" >Modal title</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -46,10 +46,28 @@ Tree
             <div class="modal-body">
                 <input name="lnum" type="hidden"/>
                 <input name="rnum" type="hidden"/>
+                <input name="idparent" type="hidden"/>
+                <div class="form-group">
+                    <label class="control-label">User</label>
+                    <select class="form-control select2" name="user">
+                        {% if userAvailable %}
+                            {% for u in userAvailable %}
+                                <option value="{{u.id}}">{{ u.fullname }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Position</label>
+                    <select class="form-control" name="position">
+                        <option value="l">Left</option>
+                        <option value="r">Right</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
         </form>
     </div>
@@ -60,7 +78,10 @@ Tree
 <script>
     var id = '{{id}}';
 
-    function getLRnum(l,r){        
+    function getLRnum(id,l,r){        
+        $('#modalInsertTree input[name="lnum"]').val(l)
+        $('#modalInsertTree input[name="rnum"]').val(r)
+        $('#modalInsertTree input[name="idparent"]').val(id)
         $('#modalInsertTree').modal('show')
     }
 
@@ -81,7 +102,7 @@ Tree
             if(arr[i].id_parent == parent) {
                 out += '<li>'
                 if(arr[i].Rnum == (arr[i].Lnum + 1)){
-                    out += '<a href="#" onclick="getLRnum('+arr[i].Lnum+','+arr[i].Rnum+')">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'    
+                    out += '<a href="#" onclick="getLRnum('+arr[i].id_user+','+arr[i].Lnum+','+arr[i].Rnum+')">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'    
                 }else{
                     out += '<a href="'+arr[i].id_user+'">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'
                 }

@@ -32,5 +32,30 @@ class TreeModel():
         cursor.execute(sql)
         user = cursor.fetchall()
         return user
+    
+    def getUserAvailable():
+        sql = "select * from users u where u.id not in (select t.id_user from t_tree t)"
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute(sql)
+        user = cursor.fetchall()
+        return user
+    
+    def insertTree(req):
+        if (req is not None):
+            lnum = req.form['rnum']
+            rnum = int(req.form['rnum']) + 1
+            idparent = req.form['idparent']
+            iduser = req.form['user']  
+            try:
+                data = (iduser,idparent,lnum,rnum)
+                sql = "insert into t_tree (id_user, id_parent,Lnum,Rnum) values (%s,%s,%s,%s)"
+                conn = mysql.connect()
+                cursor = conn.cursor()
+                cursor.execute(sql, data)
+                conn.commit()
+                return 'success'
+            except ex:
+                return ex
             
             

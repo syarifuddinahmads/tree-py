@@ -5,7 +5,8 @@ tree = Blueprint('tree', __name__)
 
 @tree.route('/')
 def index():
-    return render_template('tree/tree.html')
+    userAvailable = TreeModel.getUserAvailable()
+    return render_template('tree/tree.html',userAvailable = userAvailable)
 
 @tree.route('/<int:id>')
 def userTree(id):
@@ -18,4 +19,8 @@ def getDataTree():
 
 @tree.route('/save-tree',methods=['POST'])
 def saveTree():
-    return ""
+    try:
+        TreeModel.insertTree(request)
+    except:
+        print('ERRORS')
+    return redirect('/')
