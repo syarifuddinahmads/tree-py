@@ -36,7 +36,7 @@ Tree
 <div class="modal fade" id="modalInsertTree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <form class="modal-content" action="/save-tree" method="post">
             <div class="modal-header">
                 <h5 class="modal-title" >Modal title</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -44,20 +44,62 @@ Tree
                 </button>
             </div>
             <div class="modal-body">
-                ...
+                <input name="lnum" type="hidden"/>
+                <input name="rnum" type="hidden"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
 <script>
-    var id = '{{id}}'
+    var id = '{{id}}';
+
+    function getLRnum(l,r){        
+        $('#modalInsertTree').modal('show')
+    }
+
+    function getTree(id){
+        $.ajax({
+            url:'/ajax-data-tree',
+            success:function(response){
+                let data = getNestedChildren(response,id)
+                $('.tree').html(data)
+            }
+        })
+    }
+
+    function getNestedChildren(arr, parent) {
+        let out = ''
+        out += '<ul>'
+        for(var i in arr) {
+            if(arr[i].id_parent == parent) {
+                out += '<li>'
+                if(arr[i].Rnum == (arr[i].Lnum + 1)){
+                    out += '<a href="#" onclick="getLRnum('+arr[i].Lnum+','+arr[i].Rnum+')">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'    
+                }else{
+                    out += '<a href="'+arr[i].id_user+'">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'
+                }
+                var children = getNestedChildren(arr, arr[i].id_user)
+                if(children.length) {
+                    out += arr[i].children = children
+                }else{
+                    out += ''
+                }
+                out += '</li>'
+            }else{
+                out += ''  
+            }
+        }
+        out += '</ul>'
+        return out
+    }
+
     $(document).ready(function(){
 
         if(id != ''){
@@ -66,41 +108,6 @@ Tree
             getTree(null);
         }
 
-        function getTree(id){
-            $.ajax({
-                url:'/ajax-data-tree',
-                success:function(response){
-                    let data = getNestedChildren(response,id)
-                    $('.tree').html(data)
-                }
-            })
-        }
-
-        function getNestedChildren(arr, parent) {
-            let out = ''
-            out += '<ul>'
-            for(var i in arr) {
-                if(arr[i].id_parent == parent) {
-                    out += '<li>'
-                    if(arr[i].Rnum == (arr[i].Lnum + 1)){
-                        out += '<a href="#" class="tree-node" data-toggle="modal" data-target="#modalInsertTree">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'    
-                    }else{
-                        out += '<a href="'+arr[i].id_user+'">('+arr[i].Lnum+') | '+arr[i].fullname+' | ('+arr[i].Rnum+')</a>'
-                    }
-                    var children = getNestedChildren(arr, arr[i].id_user)
-                    if(children.length) {
-                        out += arr[i].children = children
-                    }else{
-                        out += ''
-                    }
-                    out += '</li>'
-                }else{
-                    out += ''  
-                }
-            }
-            out += '</ul>'
-            return out
-        }
     })
 </script>
 {% endblock %}

@@ -15,3 +15,7 @@ def userTree(id):
 def getDataTree():
     tree = TreeModel.getTree()
     return jsonify(tree)
+
+@tree.route('/save-tree',methods=['POST'])
+def saveTree():
+    return ""
