@@ -4,7 +4,7 @@ import pymysql
 class TreeModel():
 
     @classmethod    
-          
+  
     def searchUserNetwork(id):
         if (id is not None):
             sql = "select * from t_tree where id=%s"
@@ -20,9 +20,19 @@ class TreeModel():
             sql = "select * from t_tree t join users u on u.id = t.id_user where t.Lnum <= %s and t.Rnum >= %s"
             user = TreeModel.searchUserNetwork(id)
             conn = mysql.connect()
-            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor = conn.cursor()
             cursor.execute(sql,(user['Lnum'],user['Rnum']))
-            user = cursor.fetchone()
+            user = cursor.fetchAll()
+            return user
+        
+    def searchNetworkDown(id):
+        if (id is not None):
+            sql = "select * from t_tree t join users u on u.id = t.id_user where t.Lnum >= %s and t.Rnum <= %s"
+            user = TreeModel.searchUserNetwork(id)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql,(user['Lnum'],user['Rnum']))
+            user = cursor.fetchAll()
             return user
         
     def getTree():

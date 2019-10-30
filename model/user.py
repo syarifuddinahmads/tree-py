@@ -15,11 +15,9 @@ class UserModel():
     
     def saveUser(req):
         if (req is not None):
-            username = req.form['username']
-            fullname = req.form['fullname']
             try:
-                sql = "INSERT INTO users(username,fullname) VALUES(%s,%s)"
-                data = (username, fullname)
+                sql = "insert into users(username,fullname) values (%s,%s)"
+                data = (req.form['username'], req.form['fullname'])
                 conn = mysql.connect()
                 cursor = conn.cursor()
                 cursor.execute(sql, data)
