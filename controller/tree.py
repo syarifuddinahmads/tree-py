@@ -24,3 +24,13 @@ def saveTree():
     except:
         print('ERRORS')
     return redirect('/')
+
+@tree.route('/get-network-up-tree/<int:id>')
+def getUplineTree(id):
+    tree = TreeModel.searchNetworkUp(id)
+    return jsonify(tree)
+
+@tree.route('/get-network-down-tree/<int:id>')
+def getDownlineTree(id):
+    tree = TreeModel.searchNetworkDown(id)
+    return jsonify(tree)

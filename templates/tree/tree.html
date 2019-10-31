@@ -12,12 +12,12 @@ Tree
 <div class="tree"></div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="modalSearchTree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form class="modal-content">
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-search"></i> Searching</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -25,25 +25,27 @@ Tree
             <div class="modal-body">
                 <div class="form-group">
                     <label for="" class="control-label"></label>
-                    <select name="metode" id="metode">
-                        <option value=""></option>
-                        <option value="">Parent / Induk</option>
-                        <option value="">Turunan</option>
-                        <option value="">Jaringan</option>
+                    <select name="metode" id="metode" class="form-control">
+                        <option value="">Pilih Metode</option>
+                        <option value="1">Parent / Induk</option>
+                        <option value="2">Turunan</option>
+                        <option value="3">Jaringan</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="" class="control-label"></label>
-                    <select name="user" id="user">
-                        <option value=""></option>
+                    <select name="userId" id="userId" class="form-control">
+                        <option value="">Pilih User</option>
                     </select>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i>
+                    Close</button>
+                <button type="button" class="btn btn-primary" id="btnSearch"><i class="fa fa-search"></i>
+                    Search</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -52,7 +54,7 @@ Tree
     <div class="modal-dialog" role="document">
         <form class="modal-content" action="save-tree" method="post">
             <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+                <h5 class="modal-title">Insert Tree</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -110,15 +112,15 @@ Tree
         })
     }
 
-    function appendToTreeUserList(res){
+    function appendToTreeUserList(res) {
         let opt = '';
-        if(res !=null){
+        if (res != null) {
             data = res;
-            for(i = 0;i <data.length; i++){
-                opt += '<option value="'+data[i].id_user+'">'+data[i].fullname+'</option>';
+            for (i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].id_user + '">' + data[i].fullname + '</option>';
             }
 
-            $('#user').html(opt)
+            $('#userId').html(opt)
         }
 
     }
@@ -149,6 +151,56 @@ Tree
         return out
     }
 
+    function getChildren(arr) {
+        let out = ''
+        out += '<ul>'
+        for (var i in arr) {
+            out += '<li>'
+            out += '<a href="#">(' + arr[i].Lnum + ') | ' + arr[i].fullname + ' | (' + arr[i].Rnum + ')</a>'
+            out += '</li>'
+        }
+        out += '</ul>'
+        return out
+    }
+
+    function getDataSearching(metode, userId) {
+        let urlData = '';
+
+        if (metode == 1) {
+            urlData = '/get-network-up-tree/' + userId
+        }
+
+        if (metode == 2) {
+            urlData = '/get-network-down-tree/' + userId
+        }
+
+        if (metode == 3) {
+            urlData = '/get-network-up-tree/' + userId
+        }
+
+        $.ajax({
+            url: urlData,
+            type: 'GET',
+            success: function (response) {
+                $('.tree').empty()
+                let tree = '';
+                if (metode == 1) {
+
+                }
+
+                if (metode == 2) {
+                    tree = getNestedChildren(response, userId);
+                }
+
+                if (metode == 3) {
+                    tree = getChildren(response)
+                }
+                $('.tree').html(tree)
+                $('#modalSearchTree').modal('hide')
+            }
+        })
+    }
+
     $(document).ready(function () {
 
         if (id != '') {
@@ -156,6 +208,12 @@ Tree
         } else {
             getTree(null);
         }
+
+        $('#modalSearchTree #btnSearch').on('click', function () {
+            let metode = $('#metode').val();
+            let userId = $('#userId').val();
+            getDataSearching(metode, userId)
+        })
 
     })
 </script>

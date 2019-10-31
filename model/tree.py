@@ -4,10 +4,10 @@ import pymysql
 class TreeModel():
 
     @classmethod    
-  
-    def searchUserNetwork(id):
+
+    def searchUserNetwork(self,id):
         if (id is not None):
-            sql = "select * from t_tree where id=%s"
+            sql = "select * from t_tree t where t.id_user=%s"
             id = id
             conn = mysql.connect()
             cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -17,23 +17,25 @@ class TreeModel():
     
     def searchNetworkUp(id):
         if (id is not None):
-            sql = "select * from t_tree t join users u on u.id = t.id_user where t.Lnum <= %s and t.Rnum >= %s"
             user = TreeModel.searchUserNetwork(id)
+            data = (user['Lnum'],user['Rnum'])
+            sql = "select * from t_tree t join users u on u.id = t.id_user where t.Lnum <= %s and t.Rnum >= %s"
             conn = mysql.connect()
-            cursor = conn.cursor()
-            cursor.execute(sql,(user['Lnum'],user['Rnum']))
-            user = cursor.fetchAll()
-            return user
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute(sql,data)
+            tree = cursor.fetchall()
+            return tree
         
     def searchNetworkDown(id):
         if (id is not None):
-            sql = "select * from t_tree t join users u on u.id = t.id_user where t.Lnum >= %s and t.Rnum <= %s"
             user = TreeModel.searchUserNetwork(id)
+            data = (user['Lnum'],user['Rnum'])
+            sql = "select * from t_tree t join users u on u.id = t.id_user where t.Lnum >= %s and t.Rnum <= %s"
             conn = mysql.connect()
-            cursor = conn.cursor()
-            cursor.execute(sql,(user['Lnum'],user['Rnum']))
-            user = cursor.fetchAll()
-            return user
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute(sql,data)
+            tree = cursor.fetchall()
+            return tree
         
     def getTree():
         sql = "select * from t_tree tr join users u on u.id = tr.id_user"
@@ -67,5 +69,6 @@ class TreeModel():
                 return 'success'
             except ex:
                 return ex
-            
-            
+    
+    def updateLnumRnum():
+        return ""
