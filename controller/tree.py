@@ -5,4 +5,6 @@ tree = Blueprint('tree', __name__)
 
 @tree.route('/')
 def index():
-    return render_template('tree/tree.html')
+    tree = TreeModel.getTree()
+    return render_template('tree/tree.html',trees = tree)
+

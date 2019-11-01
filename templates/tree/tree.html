@@ -65,5 +65,10 @@ Tree
 {% endblock %}
 
 {% block js %}
-<!--for js custom-->
+<script>
+    var dataTree = '{{trees}}'
+    $(document).ready(function(){
+        console.log(dataTree)
+    })
+</script>
 {% endblock %}

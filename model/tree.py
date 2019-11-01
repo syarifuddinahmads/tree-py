@@ -24,3 +24,12 @@ class TreeModel():
             cursor.execute(sql,(user['Lnum'],user['Rnum']))
             user = cursor.fetchone()
             return user
+        
+    def getTree():
+        sql = "select * from t_tree"
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute(sql)
+        user = cursor.fetchall()
+        return user
+            
