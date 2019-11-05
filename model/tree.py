@@ -1,4 +1,5 @@
 from config.db import mysql
+from flask import jsonify
 import pymysql
 
 class TreeModel():
@@ -63,12 +64,39 @@ class TreeModel():
                 data = (iduser,idparent,lnum,rnum)
                 sql = "insert into t_tree (id_user, id_parent,Lnum,Rnum) values (%s,%s,%s,%s)"
                 conn = mysql.connect()
-                cursor = conn.cursor()
+                cursor = conn.cursor(pymysql.cursors.DictCursor)
                 cursor.execute(sql, data)
                 conn.commit()
+                TreeModel.updateLnumRnum(rnum)
                 return 'success'
             except ex:
                 return ex
     
-    def updateLnumRnum():
-        return ""
+    
+    def updateLnumRnum(rnum):
+        if (rnum is not None):
+            try:
+                rNum = rnum
+                conn = mysql.connect()
+                sql = "select * from t_tree t where t.Lnum >= %s and t.Rnum >= %s"
+                cursor = conn.cursor(pymysql.cursors.DictCursor)
+                cursor.execute(sql, rNum,rNum)
+                for lr in cursor:  
+                    data =  ((lr['Lnum'] + 2),(lr['Rnum'] + 2) , lr['id'])
+                    sqlUpdateLnumRnum = "update t_tree set Lnum = %s, Rnum = %s where id= %s"
+                    cursorUpdate = conn.cursor()
+                    cursorUpdate.execute(sqlUpdateLnumRnum, data)
+                    conn.commit()
+                return 'success'
+            except:
+                return 'Error'
+            
+    def searchParent(id):
+        if (id is not None):
+            sql = "select * from t_tree t join users u on u.id = t.id_parent where t.id_user=%s"
+            id = id
+            conn = mysql.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute(sql,id)
+            user = cursor.fetchone()
+            return user

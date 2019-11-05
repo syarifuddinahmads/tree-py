@@ -34,3 +34,9 @@ def getUplineTree(id):
 def getDownlineTree(id):
     tree = TreeModel.searchNetworkDown(id)
     return jsonify(tree)
+
+@tree.route('/get-parent/<int:id>')
+def getParentTree(id):
+    tree = TreeModel.searchParent(id)
+    return jsonify(tree)
+

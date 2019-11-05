@@ -131,7 +131,7 @@ Tree
         for (var i in arr) {
             if (arr[i].id_parent == parent) {
                 out += '<li>'
-                if (arr[i].Rnum == (arr[i].Lnum + 1)) {
+                if (arr[i].Rnum == (arr[i].Lnum+1)) {
                     out += '<a href="#" onclick="getLRnum(' + arr[i].id_user + ',' + arr[i].Lnum + ',' + arr[i].Rnum + ')">(' + arr[i].Lnum + ') | ' + arr[i].fullname + ' | (' + arr[i].Rnum + ')</a>'
                 } else {
                     out += '<a href="' + arr[i].id_user + '">(' + arr[i].Lnum + ') | ' + arr[i].fullname + ' | (' + arr[i].Rnum + ')</a>'
@@ -163,11 +163,22 @@ Tree
         return out
     }
 
+    function getParent(arr){
+        console.log(arr)
+        let out = ''
+        out += '<ul>'
+            out += '<li>'
+            out += '<a href="#">(' + arr.Lnum + ') | ' + arr.fullname + ' | (' + arr.Rnum + ')</a>'
+            out += '</li>'
+        out += '</ul>'
+        return out
+    }
+
     function getDataSearching(metode, userId) {
         let urlData = '';
 
         if (metode == 1) {
-            urlData = '/get-network-up-tree/' + userId
+            urlData = '/get-parent/' + userId
         }
 
         if (metode == 2) {
@@ -185,7 +196,7 @@ Tree
                 $('.tree').empty()
                 let tree = '';
                 if (metode == 1) {
-
+                    tree = getParent(response)
                 }
 
                 if (metode == 2) {
@@ -195,6 +206,7 @@ Tree
                 if (metode == 3) {
                     tree = getChildren(response)
                 }
+
                 $('.tree').html(tree)
                 $('#modalSearchTree').modal('hide')
             }
